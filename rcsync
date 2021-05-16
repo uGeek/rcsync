@@ -1,0 +1,134 @@
+#!/bin/bash
+# rcsync
+#   
+# Install:
+#
+# sudo apt install rclone curl
+# git clone https://github.com/uGeek/rcsync.git ~/rcsync
+#
+# sudo ln -s /home/angel/rcsync/rcsync /usr/bin/rcsync
+# sudo chmod +x /usr/bin/rcsync
+#
+# sudo apt install inotify-tools
+# sudo apt install notify-osd     ## ubuntu
+# sudo apt install libnotify-bin  ## debian    
+#
+#
+# Para cambira de nube, indica con este comando la fuente del archivo configuración                                                                                                                             
+# echo "source ~/.config/rcsync/webdav" >  ~/.config/rcsync/source  
+#
+
+VERSION=0.4
+
+
+source  ~/.config/rcsync/source
+
+
+if [ "$1" = "mount" ]
+then
+
+    while read LINEA;
+    do
+    echo "Montando $LINEA"
+    nohup rclone mount $LINEA --vfs-cache-mode full -v --allow-other 2>/dev/null &
+    done <<< $(cat $2 | grep MOUNT | sed s'|MOUNT=||'g | sed s'|\"||'g)
+
+exit
+fi
+
+
+if [ "$1" = "push" ]
+then
+rclone sync $LOCAL $SERVIDOR --include-from $FILES -v
+exit
+fi
+
+if [ "$1" = "pull" ]
+then
+rclone sync $SERVIDOR $LOCAL --include-from $FILES -v
+exit
+fi
+
+if [ "$1" = "local" ]
+then
+rcsync pull
+inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
+echo "subiendo archivos al servidor"
+notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
+rcsync push
+done
+exit
+fi
+
+
+
+if [ "$1" = "server" ]
+then
+
+while :
+do
+
+CAMBIO=$(rclone check $SERVIDOR  $LOCAL --include-from $FILES -v --download 2>&1 | grep "Failed")
+
+if [ "$CAMBIO" != "" ]
+then
+echo "Descargando desde el servidor"
+notify-send -u critical -t 2000 -c  "rcsync" "Descargando archivos del servidor"
+rcsync pull
+fi
+sleep 60
+done
+exit
+fi
+
+
+if [ "$1" = "config" ]
+then
+echo "
+---------------------------------------------------------------------------------
+Última nube configurada:
+---------------------------------------------------------------------------------
+Servidor:          $SERVIDOR
+Directorio Local:  $LOCAL
+Archivo de config: $FILES
+
+Directorios locales monitorizados para sincronizar:
+---------------------------------------------------
+- $FOLDER_1
+- $FOLDER_2
+- $FOLDER_3
+- $FOLDER_4
+- $FOLDER_5
+- $FOLDER_6
+- $FOLDER_7
+- $FOLDER_8
+- $FOLDER_9
+- $FOLDER_10
+"
+    
+exit
+fi
+    
+
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
+   then
+echo "
+---------------------------------------------------------------------------------                                                                                                                                  
+rcsync     [opción]      Descripción                                                                                                                                                                               
+---------------------------------------------------------------------------------                                                                                                                                  
+rcsync     push     >>>  push hacia el servidor                                                                                                                                                              
+rcsync     pull     >>>  pull. del servidor a local                                                                                                                                                           
+rcsync     local    >>>  Sincronizar hacia al servidor, siempre que haya cambios                                                                                                                                  
+rcsync     server   >>>  Sincronizar del servidor a local                                                                                                                                                          
+rcsync     mount    >>>  Montar directorios añadidos en el archivo de configuración                                                                                                                                 exem:    rcsync mount ~/.config/rcsync/webdav 
+
+rcsync     config   >>> Ver confiruración de última nube utilizada
+
+Si cambias de nube, ejecuta el comando añadiendo el archivo de configuración:
+  echo "source ~/.config/rcsync/webdav" >  ~/.config/rcsync/source
+                                                                                                                                                                                                                  
+version $VERSION   
+"
+exit
+fi
