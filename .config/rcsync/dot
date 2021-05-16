@@ -1,0 +1,3 @@
+SERVIDOR="raspberry:/nube/dot"
+LOCAL="local:$HOME"
+FILES="$HOME/.config/rcsync/dot.sync"
