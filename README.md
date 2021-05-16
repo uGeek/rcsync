@@ -38,20 +38,31 @@ sudo apt install libnotify-bin  ## debian
 ```
 
 
-## Iniciar sincronización o montaje de nubes
-
-Cada vez que inicies por primera vez una nubes, o quieras cambiar de nubes,indica con este comando la fuente del archivo configuración:
-Ejemplo:
-
-```
-echo "source ~/.config/rcsync/webdav" >  ~/.config/rcsync/source  
-```
-
-
-
 ## Archivos de configuración
-- webdav:        añade las variables de las nubes, directorio local,... a sincronizar
-- webdav.sync  : Directorios o archivos a sincronizar con rclone
+- webdav:        añade las variables de la nube, directorio local,... a sincronizar o montar
+- webdav.sync  : Directorios o archivos a sincronizar con rclone (solo se sincronizaran los instroducidos en este archivo)
+
+
+## Sincronización bidireccional
+Sincronización bidireccional de la nube webdav
+
+```
+rcsync sync webdav
+```
+
+
+## Mis dotfiles
+Descargando mis dotfiles del servidor
+
+```
+rcsync pull dotfiles
+```
+
+Subiendo los cambios de mis dotfiles al servidor
+
+```
+rcsync push dotfiles
+```
 
 
 ## Opciones
