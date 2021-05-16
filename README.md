@@ -57,13 +57,25 @@ echo "source ~/.config/rcsync/webdav" >  ~/.config/rcsync/source
 ## Opciones
 
 ```
----------------------------------------------------------------------------------                                                                                                                                  
-rcsync     [opción]      Descripción                                                                                                                                                                               
----------------------------------------------------------------------------------                                                                                                                                  
-rcsync     push     >>>  push hacia el servidor                                                                                                                                                              
-rcsync     pull     >>>  pull. del servidor a local                                                                                                                                                           
-rcsync     local    >>>  Sincronizar hacia al servidor, siempre que haya cambios                                                                                                                                   
-rcsync     server   >>>  Sincronizar del servidor a local                                                                                                                                                          
-rcsync     mount    >>>  Montar directorios añadidos en el archivo de configuración   
+---------------------------------------------------------------------------------
+rcsync     [opción]      Descripción
+---------------------------------------------------------------------------------
+rcsync   push    nube   >>>  push hacia el servidor
+rcsync   pull    nube   >>>  pull. del servidor a local
+rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
+rcsync   server  nube   >>>  Sincronizar del servidor a local
+rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
+rcsync   config         >>>  Ver confiruración de última nube utilizada
+
+rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
+
+  Ejemplo: Mi nube se llama webdav
+    - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
+    - Sincronización Bidireccional:                            rcsync sync  webdav 
+    - Montar directorios configurados en el archivo config:    rcsync mount webdav
+
+  Ejemplo: Mis dotfiles estan en la nube dot
+    - Subir al servidor los cambios de dotfiles en mi PC:      rcsync push dot
+    - Descargar los dotfiles de mi servidor al PC:             rcsync pull dot 
 ```
 
