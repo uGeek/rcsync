@@ -65,6 +65,15 @@ rcsync push dotfiles
 ```
 
 
+## Inicia al arrancar el sistema
+Utiliza cron para iniciar rcsync al iniciar el sistema y hacer una sincronización bidireccional:
+
+```
+@reboot ( sleep 30 && rcsync sync wdsm )
+```
+
+
+
 ## Opciones
 
 ```
