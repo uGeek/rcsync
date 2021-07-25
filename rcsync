@@ -60,7 +60,7 @@ if [ "$1" = "local" ]
 then
 rcsync pull
 inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
-notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
+XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
 rcsync push
 done
 exit
@@ -78,7 +78,7 @@ CAMBIO=$(rclone check $SERVIDOR  $LOCAL --include-from $FILES -v --download 2>&1
 
 if [ "$CAMBIO" != "" ]
 then
-notify-send -u critical -t 2000 -c  "rcsync" "Descargando archivos del servidor"
+XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "Descargando archivos del servidor"
 rcsync pull
 fi
 sleep 60
