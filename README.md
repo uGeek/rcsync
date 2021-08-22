@@ -65,6 +65,12 @@ rcsync push dotfiles
 ```
 
 
+## Termux
+Instalar y configurar en Termux para Android.
+
+Sincronización mediante el Widget de Termux
+
+
 ## Inicia al arrancar el sistema
 Utiliza cron para iniciar rcsync al iniciar el sistema y hacer una sincronización bidireccional:
 
