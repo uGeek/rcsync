@@ -1,0 +1,6 @@
+apt update
+apt upgrade -y
+apt install git nano rclone -y
+git clone https://github.com/uGeek/rcsync.git ~/rcsync
+chmod a+x ~/rcsync/*
+termux-setup-storage #Permisos
