@@ -1,0 +1,3 @@
+SERVIDOR="webdav:"
+LOCAL="local:$HOME/storage/shared"
+FILES="$HOME/.config/rcsync/webdav.sync"
