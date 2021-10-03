@@ -1,4 +1,5 @@
 # https://github.com/nextcloud/ransomware_protection/blob/master/resources/extensions.txt
+##  Modificar lista para adaptar a rcsync: sed -i 's/^/- */'  extensions.txt
 
 - *.enc
 - *.777
