@@ -1,3 +1,5 @@
+# https://github.com/nextcloud/ransomware_protection/blob/master/resources/extensions.txt
+
 - *.enc
 - *.777
 - *.R4A
