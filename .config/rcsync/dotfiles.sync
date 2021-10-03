@@ -1,9 +1,10 @@
-/.inputrc
-/.vimrc
-/.Xresources
-/.config/i3/**
-/.config/fish/**
-/.config/qutebrowser/**
-/.config/rcsync/**
-/.local/share/applications/**
-/appimage/**
++ /.inputrc
++ /.vimrc
++ /.Xresources
++ /.config/i3/**
++ /.config/fish/**
++ /.config/qutebrowser/**
++ /.config/rcsync/**
++ /.local/share/applications/**
++ /appimage/**
+- **
