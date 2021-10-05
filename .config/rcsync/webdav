@@ -2,6 +2,7 @@
 SERVIDOR="webdav:"          
 LOCAL="local:$HOME"
 FILES="$HOME/.config/rcsync/webdav.sync"
+CONFIG="$HOME/.config/rclone/rclone.conf"
 
 ## directorios a monitorizar con inotify
 FOLDER_1="/home/angel/Notas"
