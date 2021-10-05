@@ -17,7 +17,7 @@
 
 
 
-VERSION=0.5
+VERSION=0.6
 
 
 
@@ -46,7 +46,7 @@ fi
 if [ "$1" = "push" ]
 then
 echo "Subiendo archivos al servidor ..."
-rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  -v
+rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v
 exit
 fi
 
@@ -55,7 +55,7 @@ fi
 if [ "$1" = "pull" ]
 then
 echo "Descargando archivos desde el servidor ..."
-rclone sync $SERVIDOR $LOCAL --filter-from $FILES  -v 
+rclone sync $SERVIDOR $LOCAL --filter-from $FILES --config=$CONFIG -v 
 exit
 fi
 
@@ -77,7 +77,7 @@ then
 while :
 do
 
-CAMBIO=$(rclone check $SERVIDOR  $LOCAL --filter-from $FILES -v --download 2>&1 | grep "Failed")
+CAMBIO=$(rclone check $SERVIDOR  $LOCAL --filter-from $FILES --config=$CONFIG -v --download 2>&1 | grep "Failed")
 
 if [ "$CAMBIO" != "" ]
 then
@@ -153,4 +153,3 @@ version $VERSION
 "
 exit
 fi
-
