@@ -1,3 +1,4 @@
 SERVIDOR="raspberry:/nube/dotfiles"
 LOCAL="local:$HOME"
 FILES="$HOME/.config/rcsync/dotfiles.sync"
+CONFIG="$HOME/.config/rclone/rclone.conf
