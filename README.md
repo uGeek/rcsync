@@ -28,15 +28,19 @@ sudo apt install curl
 ```
 
 
-### Necesita los siguientes paquetes:
+### Para notificaciones inotify-tools
 
 ```
 sudo apt install inotify-tools
 sudo apt install notify-osd     ## ubuntu
 sudo apt install libnotify-bin  ## debian    
-
 ```
 
+### Para utilizar los archivos cifrados de rclone, dialog
+
+```
+sudo apt install dialog
+```
 
 ## Archivos de configuración
 - webdav:        añade las variables de la nube, directorio local,... a sincronizar o montar
@@ -94,6 +98,7 @@ rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cam
 rcsync   server  nube   >>>  Sincronizar del servidor a local
 rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
 rcsync   config         >>>  Ver confiruración de última nube utilizada
+rcsync   mount   nube c >>>  Archivo de configuración de rclone cifrado
 
 rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
 
