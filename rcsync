@@ -14,7 +14,7 @@
 # sudo apt install libnotify-bin  ## debian
 # sudo apt install dialog
 
-VERSION=0.9
+VERSION=0.9.1
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -50,7 +50,6 @@ version $VERSION
 "
     exit
 fi
-
 
 
 if [ "$1" = "U" ]
@@ -89,9 +88,9 @@ then
 fi
 
 
-if [ -f ~/.config/rcsync/$2 ]
+if [ -f ~/.config/rcsync/"$(echo $(cat ~/.config/rcsync/source | sed 's|source ~/.config/rcsync/||g'))" ]
 then
-    echo
+    echo ""
 else
     echo "No existe ese archivo de configuración"
     exit
@@ -126,7 +125,6 @@ then
 exit
 fi
 
-
 if [ "$1" = "push" ]
 then
 echo "Subiendo archivos al servidor ..."
@@ -145,10 +143,10 @@ fi
 
 if [ "$1" = "local" ]
 then
-rcsync pull
+rcsync pull 
 inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
 XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
-rcsync push
+rcsync push 
 done
 exit
 fi
@@ -165,13 +163,12 @@ CAMBIO=$(rclone check $SERVIDOR  $LOCAL --filter-from $FILES --config=$CONFIG -v
 if [ "$CAMBIO" != "" ]
 then
 XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "Descargando archivos del servidor"
-rcsync pull
+rcsync pull 
 fi
 sleep 60
 done
 exit
 fi
-
 
 if [ "$1" = "sync" ]
 then
@@ -179,7 +176,6 @@ then
     rcsync server $2 &
 exit
 fi
-
 
 if [ "$1" = "config" ]
 then
