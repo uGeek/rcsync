@@ -15,10 +15,7 @@
 #
 
 
-
-
-VERSION=0.6
-
+VERSION=0.7
 
 
 if [ "$2" != "" ]
@@ -29,6 +26,11 @@ fi
 
 source  ~/.config/rcsync/source
 
+if [ "$3" = "c" ]
+then
+RCLONE_CONFIG_PASS=$(whiptail --passwordbox "rcsync. Introduce tu contraseña" 8 78 --title "password dialog" 3>&1 1>&2 2>&3)
+export RCLONE_CONFIG_PASS
+fi
 
 if [ "$1" = "mount" ]
 then
@@ -41,7 +43,6 @@ then
 
 exit
 fi
-
 
 if [ "$1" = "push" ]
 then
@@ -137,8 +138,11 @@ rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cam
 rcsync   server  nube   >>>  Sincronizar del servidor a local
 rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
 rcsync   config         >>>  Ver confiruración de última nube utilizada
+rcsync   mount   nube c >>>  Archivo de configuración de rclone cifrado
 
 rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
+
+
 
   Ejemplo: Mi nube se llama webdav
     - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
