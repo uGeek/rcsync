@@ -14,9 +14,7 @@
 # sudo apt install libnotify-bin  ## debian
 #
 
-
 VERSION=0.7
-
 
 if [ "$2" != "" ]
 then
@@ -31,6 +29,13 @@ then
 RCLONE_CONFIG_PASS=$(whiptail --passwordbox "rcsync. Introduce tu contraseña" 8 78 --title "password dialog" 3>&1 1>&2 2>&3)
 export RCLONE_CONFIG_PASS
 fi
+
+if [ "$1" = "e" ]
+then
+$EDITOR ~/.config/rcsync/$2  ;  $EDITOR ~/.config/rcsync/$2.sync    
+exit    
+fi
+
 
 if [ "$1" = "mount" ]
 then
@@ -103,9 +108,11 @@ echo "
 ---------------------------------------------------------------------------------
 Última nube configurada:
 ---------------------------------------------------------------------------------
-Servidor:          $SERVIDOR
-Directorio Local:  $LOCAL
-Archivo de config: $FILES
+Servidor:                         $SERVIDOR
+Directorio Local:                 $LOCAL
+Archivo de config:                $FILES
+Archivo de configuración:         $CONFIG
+Editor para editar configuración: $EDITOR
 
 Directorios locales monitorizados para sincronizar:
 ---------------------------------------------------
@@ -138,6 +145,7 @@ rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cam
 rcsync   server  nube   >>>  Sincronizar del servidor a local
 rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
 rcsync   config         >>>  Ver confiruración de última nube utilizada
+rcsync   e       nube   >>>  Configurar archivo de configuración y directorios a sincronizar
 rcsync   mount   nube c >>>  Archivo de configuración de rclone cifrado
 
 rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
