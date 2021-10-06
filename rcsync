@@ -12,28 +12,105 @@
 # sudo apt install inotify-tools
 # sudo apt install notify-osd     ## ubuntu
 # sudo apt install libnotify-bin  ## debian
-#
+# sudo apt install dialog
 
-VERSION=0.7
+VERSION=0.8.1
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
+then
+    echo "
+---------------------------------------------------------------------------------
+rcsync     [opción]      Descripción
+---------------------------------------------------------------------------------
+rcsync   push    nube   >>>  push hacia el servidor
+rcsync   pull    nube   >>>  pull. del servidor a local
+rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
+rcsync   server  nube   >>>  Sincronizar del servidor a local
+rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
+rcsync   push/pull/local/server/sync  nube c  >>>  Archivo de configuración de rclone cifrado
+
+rcsync   config         >>>  Ver confiruración de última nube utilizada
+rcsync   lsconfig       >>>  Listar archivos de configuracion disponibles   
+rcsync   e       nube   >>>  Configurar archivo de configuración y directorios a sincronizar
+
+rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
+
+rcsync   U              >>> Instalar y actualizar últimos paquetes para ubuntu.
+
+  Ejemplo: Mi nube se llama webdav
+    - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
+    - Sincronización Bidireccional:                            rcsync sync  webdav 
+    - Montar directorios configurados en el archivo config:    rcsync mount webdav
+
+  Ejemplo: Mis dotfiles estan en la nube dot
+    - Subir al servidor los cambios de dotfiles en mi PC:      rcsync push dot
+    - Descargar los dotfiles de mi servidor al PC:             rcsync pull dot
+
+version $VERSION
+"
+    exit
+fi
+
+
+
+if [ "$1" = "U" ]
+then
+    sudo apt install curl notify-osd dialog -y
+    curl https://rclone.org/install.sh | sudo bash
+exit
+fi
+
+
+if [ -f ~/.config/rcsync/editor ];
+then
+    source ~/.config/rcsync/editor
+else
+    echo -en "¿Que editor de texto quieres utilizar para configurar rcsync?: " ; read edit
+    echo "EDITOR='$edit'" >  ~/.config/rcsync/editor
+    source ~/.config/rcsync/editor
+fi
+
+
+if [ "$1" = "e" ]
+then
+    $EDITOR ~/.config/rcsync/$2  ;  $EDITOR ~/.config/rcsync/$2.sync
+    exit
+fi
+
+
+if [ "$1" = "lsconfig" ]
+then
+    echo ""
+    echo "Archivos de configuracion"
+    echo "-------------------------"
+    ls -1 --ignore="source"  --ignore="*~" --ignore="editor"  ~/.config/rcsync
+    echo ""
+    exit
+fi
+
+
+if [ -f ~/.config/rcsync/$2 ]
+then
+    echo
+else
+    echo "No existe ese archivo de configuración"
+    exit
+fi
+
 
 if [ "$2" != "" ]
 then
-echo "source ~/.config/rcsync/$2" >  ~/.config/rcsync/source
+    echo "source ~/.config/rcsync/$2" >  ~/.config/rcsync/source
 fi
 
 
 source  ~/.config/rcsync/source
 
+
 if [ "$3" = "c" ]
 then
-RCLONE_CONFIG_PASS=$(whiptail --passwordbox "rcsync. Introduce tu contraseña" 8 78 --title "password dialog" 3>&1 1>&2 2>&3)
-export RCLONE_CONFIG_PASS
-fi
-
-if [ "$1" = "e" ]
-then
-$EDITOR ~/.config/rcsync/$2  ;  $EDITOR ~/.config/rcsync/$2.sync    
-exit    
+    RCLONE_CONFIG_PASS=$(whiptail --passwordbox "rcsync. Introduce tu contraseña" 8 78 --title "password dialog" 3>&1 1>&2 2>&3)
+    export RCLONE_CONFIG_PASS
 fi
 
 
@@ -42,12 +119,13 @@ then
 
     while read LINEA;
     do
-    echo "Montando $LINEA"
-    nohup rclone mount $LINEA --vfs-cache-mode full -v --allow-other 2>/dev/null &
-    done <<< $(cat ~/.config/rcsync/$2 | grep MOUNT | sed s'|MOUNT=||'g | sed s'|\"||'g)
+	echo "Montando $LINEA"
+	nohup rclone mount $LINEA --vfs-cache-mode full -v --allow-other 2>/dev/null &
+	    done <<< $(cat ~/.config/rcsync/$2 | grep MOUNT | sed s'|MOUNT=||'g | sed s'|\"||'g)
 
 exit
 fi
+
 
 if [ "$1" = "push" ]
 then
@@ -57,13 +135,13 @@ exit
 fi
 
 
-
 if [ "$1" = "pull" ]
 then
 echo "Descargando archivos desde el servidor ..."
 rclone sync $SERVIDOR $LOCAL --filter-from $FILES --config=$CONFIG -v 
 exit
 fi
+
 
 if [ "$1" = "local" ]
 then
@@ -74,7 +152,6 @@ rcsync push
 done
 exit
 fi
-
 
 
 if [ "$1" = "server" ]
@@ -95,12 +172,14 @@ done
 exit
 fi
 
+
 if [ "$1" = "sync" ]
 then
     rcsync local  $2 &
     rcsync server $2 &
 exit
 fi
+
 
 if [ "$1" = "config" ]
 then
@@ -128,40 +207,14 @@ Directorios locales monitorizados para sincronizar:
 - $FOLDER_10
 "
 
-exit
-fi
+echo "---------------------------------------"
+echo " Archivos y directorios a sincronizar  "
+echo "---------------------------------------"
+echo ""
+echo ""
 
+cat ~/.config/rcsync/"$(echo $(cat ~/.config/rcsync/source | sed 's|source ~/.config/rcsync/||g'))".sync
+echo ""
 
-
-if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
-   then
-echo "
----------------------------------------------------------------------------------
-rcsync     [opción]      Descripción
----------------------------------------------------------------------------------
-rcsync   push    nube   >>>  push hacia el servidor
-rcsync   pull    nube   >>>  pull. del servidor a local
-rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
-rcsync   server  nube   >>>  Sincronizar del servidor a local
-rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
-rcsync   config         >>>  Ver confiruración de última nube utilizada
-rcsync   e       nube   >>>  Configurar archivo de configuración y directorios a sincronizar
-rcsync   mount   nube c >>>  Archivo de configuración de rclone cifrado
-
-rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
-
-
-
-  Ejemplo: Mi nube se llama webdav
-    - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
-    - Sincronización Bidireccional:                            rcsync sync  webdav 
-    - Montar directorios configurados en el archivo config:    rcsync mount webdav
-
-  Ejemplo: Mis dotfiles estan en la nube dot
-    - Subir al servidor los cambios de dotfiles en mi PC:      rcsync push dot
-    - Descargar los dotfiles de mi servidor al PC:             rcsync pull dot
-
-version $VERSION
-"
 exit
 fi
