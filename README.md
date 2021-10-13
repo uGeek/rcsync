@@ -10,7 +10,7 @@ git clone https://github.com/uGeek/rcsync.git ~/rcsync
 ```
 
 ```
-sudo ln -s /home/angel/rcsync/rcsync /usr/bin/rcsync
+sudo ln -s /home/$USER/rcsync/rcsync /usr/bin/rcsync
 sudo chmod +x /usr/bin/rcsync
 ```
 
