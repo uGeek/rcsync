@@ -14,7 +14,7 @@
 # sudo apt install libnotify-bin  ## debian
 # sudo apt install dialog
 
-VERSION=0.9.2
+VERSION=0.9.3
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -27,6 +27,7 @@ rcsync   pull    nube   >>>  pull. del servidor a local
 rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
 rcsync   server  nube   >>>  Sincronizar del servidor a local
 rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
+rcsync   sync    nube memory  >> Montar en el directorio local la RAM y simcronización con la nube bidireccional
 rcsync   push/pull/local/server/sync  nube c  >>>  Archivo de configuración de rclone cifrado
 
 rcsync   config         >>>  Ver confiruración de última nube utilizada
@@ -54,7 +55,7 @@ fi
 
 if [ "$1" = "U" ]
 then
-    sudo apt install curl notify-osd dialog -y
+    sudo apt install curl notify-osd dialog  inotify-tools -y
     curl https://rclone.org/install.sh | sudo bash
 exit
 fi
@@ -64,6 +65,7 @@ if [ -f ~/.config/rcsync/editor ];
 then
     source ~/.config/rcsync/editor
 else
+    mkdir -p ~/.config/rcsync/
     echo -en "¿Que editor de texto quieres utilizar para configurar rcsync?: " ; read edit
     echo "EDITOR='$edit'" >  ~/.config/rcsync/editor
     source ~/.config/rcsync/editor
@@ -174,6 +176,10 @@ fi
 
 if [ "$1" = "sync" ]
 then
+    if [ "$3" = "memory" ]
+    then
+    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
+fi
     rcsync local  $2 &
     rcsync server $2 &
 exit
