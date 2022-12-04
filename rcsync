@@ -37,6 +37,7 @@ rcsync   e       nube   >>>  Configurar archivo de configuración y directorios 
 rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
 
 rcsync   U              >>> Instalar y actualizar últimos paquetes para ubuntu.
+rcsync   install termux >>> Instalar en termux
 
   Ejemplo: Mi nube se llama webdav
     - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
@@ -70,6 +71,23 @@ else
     echo "EDITOR='$edit'" >  ~/.config/rcsync/editor
     source ~/.config/rcsync/editor
 fi
+
+
+if [ "$1" = "install" ] || [ "$2" = "termux" ]
+then
+    mkdir -p $HOME/.local/bin
+    echo "alias rcsync='bash ~/.local/bin/rcsync'" >> $HOME/.bashrc
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/rcsync -o $HOME/.local/bin/rcsync && chmod +x $HOME/.local/bin/rcsync
+    mkdir -p $HOME/.config/rcsync/
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/termux      -o $HOME/.config/termux
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/termux.sync -o $HOME/.config/termux.sync
+    ### Termux
+    pkg upgrade
+    pkg install inotify-tools termux-api termux-services rclone -y
+    clear
+    exit
+fi
+
 
 
 if [ "$1" = "e" ]
