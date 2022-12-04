@@ -1,5 +1,13 @@
 # rcsync
 
+## Instalación en Termux
+
+
+```
+bash <(curl https://raw.githubusercontent.com/uGeek/rccalendar/main/c) install termux
+```
+
+
 
 ## Instalación
 
