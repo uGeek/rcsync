@@ -1,27 +1,40 @@
 # rcsync
 
-## Instalación en Termux
+Sincronización de directorios con multitud de nubes públicas o privadas.
+
+- Sincronización automatizada con inotify, tanto en linux como android.
+- **En Android es necesario crear previamente el directorio que vamos a sincronizar**
+
+
+
+## Instalación en Ubuntu
+
+```
+bash <(curl https://raw.githubusercontent.com/uGeek/rcsync/main/rcsync) install ubuntu
+```
+
+## Instalación en Termux (Android)
 
 
 ```
-bash <(curl https://raw.githubusercontent.com/uGeek/rccalendar/main/c) install termux
+bash <(curl https://raw.githubusercontent.com/uGeek/rcsync/main/rcsync) install termux
 ```
 
+### Sincronizando
 
 
-## Instalación
 
-Instala **rcsync** en tu dispositivo con linux
+
+## Instalación en el sistema
+
+Si tu distro no ejecuta los scripts en el directorio `$HOME/.local/bin/` puedes crear una enlace simbólico
 
 ```
-git clone https://github.com/uGeek/rcsync.git ~/rcsync
+sudo chmod +x /home/$USER/.local/bin/rcsync
+sudo ln -s /home/$USER/.local/bin/rcsync /usr/bin/rcsync
 ```
 
-```
-sudo ln -s /home/$USER/rcsync/rcsync /usr/bin/rcsync
-sudo chmod +x /usr/bin/rcsync
-```
-
+## Paquetes necesarios
 ### Instala **RCLONE** y **curl**.
 
 
