@@ -1,0 +1,8 @@
+SERVIDOR="server:"                           # Servidor remoto
+#LOCAL="/data/data/com.termux/files/home"    # Home de termux
+LOCAL="local:$HOME/storage/shared"           # Home del almacenamiento interno android
+FILES="$HOME/.config/rcsync/notas.sync"      # Archivo donde aparecen los directorios a sincronizar
+CONFIG="$HOME/.config/rclone/rclone.conf"    # Archivo de configuración de rclone
+EDITOR="nano"                                # Editor de texto
+FOLDER_1="$HOME/storage/shared/Notas"        # Directorio Notas. Monitorización para subir al servidor cualquier cambio en las notas
+FOLDER_2="$HOME/storage/shared/sync"         # Directorio sync . Monitorización para subir cualquier cambio en el directorio sync
