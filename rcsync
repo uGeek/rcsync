@@ -13,8 +13,15 @@
 # sudo apt install notify-osd     ## ubuntu
 # sudo apt install libnotify-bin  ## debian
 # sudo apt install dialog
+# 
+# sudo pacman -Syy inotify-tools notify-osd  # arch
+#
+#
+#
 
-VERSION=0.9.3
+
+
+VERSION=0.9.4
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -36,7 +43,17 @@ rcsync   e       nube   >>>  Configurar archivo de configuración y directorios 
 
 rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
 
-rcsync   U              >>> Instalar y actualizar últimos paquetes para ubuntu.
+Ubuntu
+--------------
+rcsync   install ubuntu >>> Instalar y actualizar últimos paquetes para ubuntu.
+
+Termux
+--------------
+rcsync   localt   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
+rcsync   servert  nube   >>>  Sincronizar del servidor a local
+rcsync   synct    nube   >>>  Sincronización con la nube bidireccional
+rcsync   synct    nube memory  >> Montar en el directorio local la RAM y simcronización con la nube bidireccional
+
 rcsync   install termux >>> Instalar en termux
 
   Ejemplo: Mi nube se llama webdav
@@ -48,16 +65,26 @@ rcsync   install termux >>> Instalar en termux
     - Subir al servidor los cambios de dotfiles en mi PC:      rcsync push dot
     - Descargar los dotfiles de mi servidor al PC:             rcsync pull dot
 
+
 version $VERSION
 "
     exit
 fi
 
 
-if [ "$1" = "U" ]
+if [ "$1" = "install" ] || [ "$2" = "ubuntu" ]
 then
+    ### Ubuntu
     sudo apt install curl notify-osd dialog  inotify-tools -y
     curl https://rclone.org/install.sh | sudo bash
+    ### Install rcsync
+    mkdir -p $HOME/.local/bin
+    echo "alias rcsync='bash ~/.local/bin/rcsync'" >> $HOME/.bashrc
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/rcsync -o $HOME/.local/bin/rcsync && chmod +x $HOME/.local/bin/rcsync
+    mkdir -p $HOME/.config/rcsync/
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/notas.sample      -o $HOME/.config/rcsync/notas.sample
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/notas.sync.sample -o $HOME/.config/rcsync/notas.sync.sample
+    clear
 exit
 fi
 
@@ -75,16 +102,17 @@ fi
 
 if [ "$1" = "install" ] || [ "$2" = "termux" ]
 then
+    ### Termux
+    pkg upgrade
+    pkg install curl inotify-tools termux-api termux-services rclone -y
+    termux-setup-storage
+    ### Install rcsync
     mkdir -p $HOME/.local/bin
     echo "alias rcsync='bash ~/.local/bin/rcsync'" >> $HOME/.bashrc
     curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/rcsync -o $HOME/.local/bin/rcsync && chmod +x $HOME/.local/bin/rcsync
     mkdir -p $HOME/.config/rcsync/
-    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/termux      -o $HOME/.config/termux
-    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/termux.sync -o $HOME/.config/termux.sync
-    ### Termux
-    pkg upgrade
-    pkg install inotify-tools termux-api termux-services rclone -y
-    termux-setup-storage
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/notas.sample      -o $HOME/.config/rcsync/notas.sample
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/notas.sync.sample -o $HOME/.config/rcsync/notas.sync.sample
     clear
     exit
 fi
@@ -148,7 +176,7 @@ then
 exit
 fi
 
-if [ "$1" = "push" ]
+if [ "$1" = "push" ] || [ "$1" = "u" ] 
 then
 echo "Subiendo archivos al servidor ..."
 rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v
@@ -156,10 +184,10 @@ exit
 fi
 
 
-if [ "$1" = "pull" ]
+if [ "$1" = "pull" ] || [ "$1" = "d" ] 
 then
 echo "Descargando archivos desde el servidor ..."
-rclone sync $SERVIDOR $LOCAL --filter-from $FILES --config=$CONFIG -v 
+rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG -v 
 exit
 fi
 
@@ -170,6 +198,15 @@ rcsync pull
 inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
 XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
 rcsync push 
+done
+exit
+fi
+
+if [ "$1" = "localt" ]
+then
+~/.local/bin/rcsync pull 
+inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
+~/.local/bin/rcsync push 
 done
 exit
 fi
@@ -193,6 +230,26 @@ done
 exit
 fi
 
+
+if [ "$1" = "servert" ]
+then
+
+while :
+do
+
+CAMBIO=$(rclone check $SERVIDOR  $LOCAL --filter-from $FILES --config=$CONFIG -v --download 2>&1 | grep "Failed")
+
+if [ "$CAMBIO" != "" ]
+then
+~/.local/bin/rcsync pull 
+fi
+sleep 60
+done
+exit
+fi
+
+
+
 if [ "$1" = "sync" ]
 then
     if [ "$3" = "memory" ]
@@ -203,6 +260,20 @@ fi
     rcsync server $2 &
 exit
 fi
+
+
+if [ "$1" = "synct" ]
+then
+    if [ "$3" = "memory" ]
+    then
+    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
+fi
+    ~/.local/bin/rcsync local  $2 &
+    ~/.local/bin/rcsync server $2 &
+exit
+fi
+
+
 
 if [ "$1" = "config" ]
 then
