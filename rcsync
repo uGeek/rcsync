@@ -84,6 +84,7 @@ then
     ### Termux
     pkg upgrade
     pkg install inotify-tools termux-api termux-services rclone -y
+    termux-setup-storage
     clear
     exit
 fi
