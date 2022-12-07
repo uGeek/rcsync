@@ -47,6 +47,10 @@ Ubuntu
 --------------
 rcsync   install ubuntu >>> Instalar y actualizar últimos paquetes para ubuntu.
 
+Arch
+--------------
+rcsync   install arch >>> Instalar y actualizar últimos paquetes para arch.
+
 Termux
 --------------
 rcsync   localt   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
@@ -87,6 +91,25 @@ then
     clear
 exit
 fi
+
+
+if [ "$1" = "install" ] || [ "$2" = "arch" ]
+then
+    ### Ubuntu
+    sudo pacman -Syy inotify-tools notify-osd rclone
+    #curl https://rclone.org/install.sh | sudo bash
+    ### Install rcsync
+    mkdir -p $HOME/.local/bin
+    echo "alias rcsync='bash ~/.local/bin/rcsync'" >> $HOME/.bashrc
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/rcsync -o $HOME/.local/bin/rcsync && chmod +x $HOME/.local/bin/rcsync
+    mkdir -p $HOME/.config/rcsync/
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/notas.sample      -o $HOME/.config/rcsync/notas.sample
+    curl -L https://raw.githubusercontent.com/uGeek/rcsync/main/.config/rcsync/notas.sync.sample -o $HOME/.config/rcsync/notas.sync.sample
+    clear
+exit
+fi
+
+
 
 
 if [ -f ~/.config/rcsync/editor ];
