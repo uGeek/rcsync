@@ -21,44 +21,50 @@
 
 
 
-VERSION=0.9.4
+VERSION=0.9.5
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
     echo "
 ---------------------------------------------------------------------------------
-rcsync     [opción]      Descripción
+rcsync     [opción]            Descripción
 ---------------------------------------------------------------------------------
-rcsync   push    nube   >>>  push hacia el servidor
-rcsync   pull    nube   >>>  pull. del servidor a local
-rcsync   local   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
-rcsync   server  nube   >>>  Sincronizar del servidor a local
-rcsync   sync    nube   >>>  Sincronización con la nube bidireccional
-rcsync   sync    nube memory  >> Montar en el directorio local la RAM y simcronización con la nube bidireccional
+rcsync   push    nube          >>>  push hacia el servidor
+rcsync   pull    nube          >>>  pull. del servidor a local
+rcsync   local   nube          >>>  Sincronizar hacia al servidor, siempre que haya cambios
+rcsync   server  nube          >>>  Sincronizar del servidor a local
+rcsync   sync    nube          >>>  Sincronización con la nube bidireccional
+rcsync   sync    nube memory   >>> Montar en el directorio local la RAM y simcronización con la nube bidireccional
 rcsync   push/pull/local/server/sync  nube c  >>>  Archivo de configuración de rclone cifrado
+rcsync   menu    nube          >>>  Elegir entre subir o descargar archivos en modo bucle
 
-rcsync   config         >>>  Ver confiruración de última nube utilizada
-rcsync   lsconfig       >>>  Listar archivos de configuracion disponibles   
-rcsync   e       nube   >>>  Configurar archivo de configuración y directorios a sincronizar
+rcsync   config                >>>  Ver confiruración de última nube utilizada
+rcsync   lsconfig              >>>  Listar archivos de configuracion disponibles   
+rcsync   e       nube          >>>  Configurar archivo de configuración y directorios a sincronizar
 
-rcsync   mount   nube   >>>  Montar directorios añadidos en el archivo de configuración
+rcsync   mount   nube          >>>  Montar directorios añadidos en el archivo de configuración
+
+
+
+
 
 Ubuntu
 --------------
-rcsync   install ubuntu >>> Instalar y actualizar últimos paquetes para ubuntu.
+rcsync   install ubuntu        >>> Instalar y actualizar últimos paquetes para ubuntu.
 
 Arch
 --------------
-rcsync   install arch >>> Instalar y actualizar últimos paquetes para arch.
+rcsync   install arch          >>> Instalar y actualizar últimos paquetes para arch.
 
 Termux
 --------------
-rcsync   localt   nube   >>>  Sincronizar hacia al servidor, siempre que haya cambios
-rcsync   servert  nube   >>>  Sincronizar del servidor a local
-rcsync   synct    nube   >>>  Sincronización con la nube bidireccional
+rcsync   localt   nube         >>>  Sincronizar hacia al servidor, siempre que haya cambios
+rcsync   servert  nube         >>>  Sincronizar del servidor a local
+rcsync   synct    nube         >>>  Sincronización con la nube bidireccional
 rcsync   synct    nube memory  >> Montar en el directorio local la RAM y simcronización con la nube bidireccional
+rcsync   menut    nube         >>>  Elegir entre subir o descargar archivos en modo bucle
 
-rcsync   install termux >>> Instalar en termux
+rcsync   install termux        >>> Instalar en termux
 
   Ejemplo: Mi nube se llama webdav
     - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
@@ -296,7 +302,51 @@ fi
 exit
 fi
 
+if [ "$1" = "menu" ]                                                                                                                                                                                              
+then                                                                                                                                                                                                               
+                                                                                                                                                                                                                   
+while :                                                                                                                                                                                                            
+do                                                                                                                                                                                                                 
+    echo  "Selecciona una opción:"                                                                                                                                                                                 
+    echo  "----------------------"                                                                                                                                                                                 
+    echo  "  u = Subir   ⬆️  "                                                                                                                                                                                       
+    echo  "  d = bajar   ️⬇️  "                                                                                                                                                                                      
+    read -e -p "Último comando: " -i "$MENU" MENU                                                                                                                                                                  
+if [ "$MENU" != "u" ]                                                                                                                                                                                              
+then                                                                                                                                                                                                               
+rcsync u                                                                                                                                                                                              
+fi                                                                                                                                                                                                                 
+                                                                                                                                                                                                                   
+if [ "$MENU" != "d" ]                                                                                                                                                                                              
+then                                                                                                                                                                                                               
+rcsync d                                                                                                                                                                                              
+fi                                                                                                                                                                                                                 
+done                                                                                                                                                                                                               
+exit                                                                                                                                                                                                               
+fi  
 
+if [ "$1" = "menut" ]                                                                                                                                                                                              
+then                                                                                                                                                                                                               
+                                                                                                                                                                                                                   
+while :                                                                                                                                                                                                            
+do                                                                                                                                                                                                                 
+    echo  "Selecciona una opción:"                                                                                                                                                                                 
+    echo  "----------------------"                                                                                                                                                                                 
+    echo  "  u = Subir   ⬆️  "                                                                                                                                                                                       
+    echo  "  d = bajar   ️⬇️  "                                                                                                                                                                                      
+    read -e -p "Último comando: " -i "$MENU" MENU                                                                                                                                                                  
+if [ "$MENU" != "u" ]                                                                                                                                                                                              
+then                                                                                                                                                                                                               
+~/.local/bin/rcsync u                                                                                                                                                                                              
+fi                                                                                                                                                                                                                 
+                                                                                                                                                                                                                   
+if [ "$MENU" != "d" ]                                                                                                                                                                                              
+then                                                                                                                                                                                                               
+~/.local/bin/rcsync d                                                                                                                                                                                              
+fi                                                                                                                                                                                                                 
+done                                                                                                                                                                                                               
+exit                                                                                                                                                                                                               
+fi  
 
 if [ "$1" = "config" ]
 then
