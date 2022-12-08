@@ -311,16 +311,19 @@ do
     echo  "----------------------"                                                                                                                                                                                 
     echo  "  u = Subir   ⬆️  "                                                                                                                                                                                       
     echo  "  d = bajar   ️⬇️  "                                                                                                                                                                                      
-    read -e -p "Último comando: " -i "$MENU" MENU                                                                                                                                                                  
-if [ "$MENU" != "u" ]                                                                                                                                                                                              
+    read -e -p "Último comando: " -i "$MENU" MENU
+    clear
+if [ "$MENU" = "u" ]                                                                                                                                                                                              
 then                                                                                                                                                                                                               
 rcsync u                                                                                                                                                                                              
 fi                                                                                                                                                                                                                 
                                                                                                                                                                                                                    
-if [ "$MENU" != "d" ]                                                                                                                                                                                              
+if [ "$MENU" = "d" ]                                                                                                                                                                                              
 then                                                                                                                                                                                                               
 rcsync d                                                                                                                                                                                              
-fi                                                                                                                                                                                                                 
+fi
+echo ""
+echo ""
 done                                                                                                                                                                                                               
 exit                                                                                                                                                                                                               
 fi  
@@ -335,15 +338,18 @@ do
     echo  "  u = Subir   ⬆️  "                                                                                                                                                                                       
     echo  "  d = bajar   ️⬇️  "                                                                                                                                                                                      
     read -e -p "Último comando: " -i "$MENU" MENU                                                                                                                                                                  
-if [ "$MENU" != "u" ]                                                                                                                                                                                              
+    clear
+if [ "$MENU" = "u" ]                                                                                                                                                                                              
 then                                                                                                                                                                                                               
 ~/.local/bin/rcsync u                                                                                                                                                                                              
 fi                                                                                                                                                                                                                 
                                                                                                                                                                                                                    
-if [ "$MENU" != "d" ]                                                                                                                                                                                              
+if [ "$MENU" = "d" ]                                                                                                                                                                                              
 then                                                                                                                                                                                                               
 ~/.local/bin/rcsync d                                                                                                                                                                                              
-fi                                                                                                                                                                                                                 
+fi  
+echo ""
+echo ""
 done                                                                                                                                                                                                               
 exit                                                                                                                                                                                                               
 fi  
