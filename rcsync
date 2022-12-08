@@ -258,7 +258,7 @@ then
 dunstify -u low -t 2000  "rcsync" "Descargando archivos del servidor"
 rcsync pull 
 fi
-sleep 60
+sleep 10
 done
 exit
 fi
@@ -274,9 +274,9 @@ CAMBIO=$(rclone check $SERVIDOR  $LOCAL --filter-from $FILES --config=$CONFIG -v
 
 if [ "$CAMBIO" != "" ]
 then
-~/.local/bin/rcsync pull 
+~/.local/bin/rcsync d
 fi
-sleep 60
+sleep 10
 done
 exit
 fi
@@ -301,8 +301,8 @@ then
     then
     rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
 fi
-    ~/.local/bin/rcsync local  $2 &
-    ~/.local/bin/rcsync server $2 &
+    ~/.local/bin/rcsync localt  $2 &
+    ~/.local/bin/rcsync servert $2 &
 exit
 fi
 
