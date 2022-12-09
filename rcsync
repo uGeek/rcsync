@@ -23,7 +23,7 @@
 
 
 
-VERSION=1.0.4
+VERSION=1.0.5
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -291,13 +291,6 @@ do
     echo "Modo edición durante 30 segundos"	
     dunstify -u critical -t 2000  "rcsync" "Modo edición durante 30 segundos"
     timeout 30s ~/.local/bin/rcsync m $2
-    CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
-    if [ "$CAMBIOS" != "" ]
-    then
-    echo "Modo edición durante 30 segundos más"	
-    dunstify -u critical -t 2000  "rcsync" "Modo edición 30 segundos más"
-    timeout 30s ~/.local/bin/rcsync m $2
-    fi   
     fi
     if [ "$(cat ~/.config/rcsync/status | grep "STATUS" | cut -d"=" -f2 )" = "stop" ]
     then
