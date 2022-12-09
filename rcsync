@@ -260,14 +260,21 @@ fi
 
 if [ "$1" = "m" ]
 then
+while :
+do
 inotifywait -e create,delete,modify,move,attrib  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
 ~/.local/bin/rcsync push
 done
+sleep 10
+echo "Modo edici
+done
 exit
 fi
 
+if [ "$1" = "sync" ]
+then
 while :
 do
     CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
