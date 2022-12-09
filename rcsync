@@ -15,7 +15,7 @@
 # sudo apt install dialog
 # Nuevo sistema de notificaciones dunst dunstify
 
-# 
+#
 # sudo pacman -Syy inotify-tools notify-osd  # arch
 #
 #
@@ -23,7 +23,7 @@
 
 
 
-VERSION=0.9.5.3
+VERSION=1.0
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -41,11 +41,11 @@ rcsync   push/pull/local/server/sync  nube c  >>>  Archivo de configuración de 
 rcsync   menu    nube          >>>  Elegir entre subir o descargar archivos en modo bucle
 
 rcsync   config                >>>  Ver confiruración de última nube utilizada
-rcsync   lsconfig              >>>  Listar archivos de configuracion disponibles   
+rcsync   lsconfig              >>>  Listar archivos de configuracion disponibles
 rcsync   e       nube          >>>  Configurar archivo de configuración y directorios a sincronizar
 
 rcsync   mount   nube          >>>  Montar directorios añadidos en el archivo de configuración
-
+rcsync   m                     >>>  Monitorización de directorios. Hacer 1 únio push si hay cambios
 
 
 
@@ -60,17 +60,11 @@ rcsync   install arch          >>> Instalar y actualizar últimos paquetes para 
 
 Termux
 --------------
-rcsync   localt   nube         >>>  Sincronizar hacia al servidor, siempre que haya cambios
-rcsync   servert  nube         >>>  Sincronizar del servidor a local
-rcsync   synct    nube         >>>  Sincronización con la nube bidireccional
-rcsync   synct    nube memory  >> Montar en el directorio local la RAM y simcronización con la nube bidireccional
-rcsync   menut    nube         >>>  Elegir entre subir o descargar archivos en modo bucle
-
 rcsync   install termux        >>> Instalar en termux
 
   Ejemplo: Mi nube se llama webdav
     - Sincronizar a la nube todo lo que hago en mi escritorio: rcsync local webdav
-    - Sincronización Bidireccional:                            rcsync sync  webdav 
+    - Sincronización Bidireccional:                            rcsync sync  webdav
     - Montar directorios configurados en el archivo config:    rcsync mount webdav
 
   Ejemplo: Mis dotfiles estan en la nube dot
@@ -207,7 +201,7 @@ then
 exit
 fi
 
-if [ "$1" = "push" ] || [ "$1" = "u" ] 
+if [ "$1" = "push" ] || [ "$1" = "u" ]
 then
 echo "Subiendo archivos al servidor ..."
 rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v
@@ -215,34 +209,24 @@ exit
 fi
 
 
-if [ "$1" = "pull" ] || [ "$1" = "d" ] 
+if [ "$1" = "pull" ] || [ "$1" = "d" ]
 then
 echo "Descargando archivos desde el servidor ..."
-rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG -v 
+rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG -v
 exit
 fi
 
 
 if [ "$1" = "local" ]
 then
-rcsync pull 
+~/.local/bin/rcsync pull
 inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
 #XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
-rcsync push 
+~/.local/bin/rcsync push
 done
 exit
 fi
-
-if [ "$1" = "localt" ]
-then
-~/.local/bin/rcsync pull 
-inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
-~/.local/bin/rcsync push 
-done
-exit
-fi
-
 
 if [ "$1" = "server" ]
 then
@@ -256,46 +240,13 @@ if [ "$CAMBIO" != "" ]
 then
 #XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "Descargando archivos del servidor"
 dunstify -u low -t 2000  "rcsync" "Descargando archivos del servidor"
-rcsync pull 
+~/.local/bin/rcsync pull
 fi
 sleep 10
 done
 exit
 fi
 
-
-if [ "$1" = "servert" ]
-then
-
-while :
-do
-
-CAMBIO=$(rclone check $SERVIDOR  $LOCAL --filter-from $FILES --config=$CONFIG -v --download 2>&1 | grep "Failed")
-
-if [ "$CAMBIO" != "" ]
-then
-~/.local/bin/rcsync d
-fi
-sleep 10
-done
-exit
-fi
-
-if [ "$1" = "sync" ]
-then
-    if [ "$3" = "memory" ]
-    then
-    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
-fi
-
-while :               	
-do
-    timeout 10s ~/.local/bin/rcsync local $2                                                                                                                                                                                               
-    clear
-done
-
-exit
-fi
 
 if [ "$1" = "m" ]
 then
@@ -318,7 +269,7 @@ fi
 while :
 do
     CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
-    # subir                                                                                                                                                                                                        
+    # subir
     if [ "$CAMBIOS" != "" ]
     then
     echo "Descargando cambios"
@@ -335,87 +286,32 @@ exit
 fi
 
 
-if [ "$1" = "synct" ]
+if [ "$1" = "menu" ]
 then
-    if [ "$3" = "memory" ]
-    then
-    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
+
+while :
+do
+    echo  "Selecciona una opción:"
+    echo  "----------------------"
+    echo  "  u = Subir   ⬆️  "
+    echo  "  d = bajar   ️⬇️  "
+    read -e -p "Último comando: " -i "$MENU" MENU
+    clear
+if [ "$MENU" = "u" ]
+then
+~/.local/bin/rcsync u
 fi
 
-while :               	
-do
-    timeout 10s ~/.local/bin/rcsync localt $2                                                                                                                                                                                               
-    clear
+if [ "$MENU" = "d" ]
+then
+~/.local/bin/rcsync d
+fi
+echo ""
+echo ""
 done
-
 exit
 fi
 
-#if [ "$1" = "sync" ]
-#then
-#    if [ "$3" = "memory" ]
-#    then
-#    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
-#fi
-#    rcsync local  $2 &
-#    rcsync server $2 &
-#exit
-#fi
-
-
-
-
-if [ "$1" = "menu" ]                                                                                                                                                                                              
-then                                                                                                                                                                                                               
-                                                                                                                                                                                                                   
-while :                                                                                                                                                                                                            
-do                                                                                                                                                                                                                 
-    echo  "Selecciona una opción:"                                                                                                                                                                                 
-    echo  "----------------------"                                                                                                                                                                                 
-    echo  "  u = Subir   ⬆️  "                                                                                                                                                                                       
-    echo  "  d = bajar   ️⬇️  "                                                                                                                                                                                      
-    read -e -p "Último comando: " -i "$MENU" MENU
-    clear
-if [ "$MENU" = "u" ]                                                                                                                                                                                              
-then                                                                                                                                                                                                               
-rcsync u                                                                                                                                                                                              
-fi                                                                                                                                                                                                                 
-                                                                                                                                                                                                                   
-if [ "$MENU" = "d" ]                                                                                                                                                                                              
-then                                                                                                                                                                                                               
-rcsync d                                                                                                                                                                                              
-fi
-echo ""
-echo ""
-done                                                                                                                                                                                                               
-exit                                                                                                                                                                                                               
-fi  
-
-if [ "$1" = "menut" ]                                                                                                                                                                                              
-then                                                                                                                                                                                                               
-                                                                                                                                                                                                                   
-while :                                                                                                                                                                                                            
-do                                                                                                                                                                                                                 
-    echo  "Selecciona una opción:"                                                                                                                                                                                 
-    echo  "----------------------"                                                                                                                                                                                 
-    echo  "  u = Subir   ⬆️  "                                                                                                                                                                                       
-    echo  "  d = bajar   ️⬇️  "                                                                                                                                                                                      
-    read -e -p "Último comando: " -i "$MENU" MENU                                                                                                                                                                  
-    clear
-if [ "$MENU" = "u" ]                                                                                                                                                                                              
-then                                                                                                                                                                                                               
-~/.local/bin/rcsync u                                                                                                                                                                                              
-fi                                                                                                                                                                                                                 
-                                                                                                                                                                                                                   
-if [ "$MENU" = "d" ]                                                                                                                                                                                              
-then                                                                                                                                                                                                               
-~/.local/bin/rcsync d                                                                                                                                                                                              
-fi  
-echo ""
-echo ""
-done                                                                                                                                                                                                               
-exit                                                                                                                                                                                                               
-fi  
 
 if [ "$1" = "config" ]
 then
