@@ -23,7 +23,7 @@
 
 
 
-VERSION=0.9.5.1
+VERSION=0.9.5.2
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -297,6 +297,21 @@ done
 exit
 fi
 
+if [ "$1" = "synct" ]
+then
+    if [ "$3" = "memory" ]
+    then
+    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
+fi
+
+while :               	
+do
+    timeout 10s ~/.local/bin/rcsync localt $2                                                                                                                                                                                               
+    clear
+done
+
+exit
+fi
 
 #if [ "$1" = "sync" ]
 #then
@@ -310,16 +325,7 @@ fi
 #fi
 
 
-if [ "$1" = "synct" ]
-then
-    if [ "$3" = "memory" ]
-    then
-    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
-fi
-    ~/.local/bin/rcsync localt  $2 &
-    ~/.local/bin/rcsync servert $2 &
-exit
-fi
+
 
 if [ "$1" = "menu" ]                                                                                                                                                                                              
 then                                                                                                                                                                                                               
