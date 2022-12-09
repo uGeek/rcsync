@@ -23,7 +23,7 @@
 
 
 
-VERSION=1.0
+VERSION=1.0.1
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -220,7 +220,7 @@ fi
 if [ "$1" = "local" ]
 then
 ~/.local/bin/rcsync pull
-inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
+inotifywait -e create,delete,modify,move,attrib  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
 #XDG_RUNTIME_DIR=/run/user/$(id -u) notify-send -u critical -t 2000 -c  "rcsync" "subiendo archivos al servidor"
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
 ~/.local/bin/rcsync push
@@ -249,7 +249,7 @@ fi
 
 if [ "$1" = "m" ]
 then
-inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
+inotifywait -e create,delete,modify,move,attrib  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
 ~/.local/bin/rcsync push
