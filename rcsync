@@ -36,6 +36,7 @@ rcsync   pull    nube          >>>  pull. del servidor a local
 rcsync   local   nube          >>>  Sincronizar hacia al servidor, siempre que haya cambios
 rcsync   server  nube          >>>  Sincronizar del servidor a local
 rcsync   sync    nube          >>>  Sincronización con la nube bidireccional
+rcsync   stop    nube          >>>  Detener la sincronizaci
 rcsync   sync    nube memory   >>> Montar en el directorio local la RAM y simcronización con la nube bidireccional
 rcsync   push/pull/local/server/sync  nube c  >>>  Archivo de configuración de rclone cifrado
 rcsync   menu    nube          >>>  Elegir entre subir o descargar archivos en modo bucle
