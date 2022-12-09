@@ -267,8 +267,6 @@ dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
 ~/.local/bin/rcsync push
 done
-sleep 10
-echo "Modo edici
 done
 exit
 fi
@@ -288,7 +286,7 @@ do
     echo "Descargando del servidor $(date +'%Y-%m-%d  %T') "
     fi
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Comprobando cambios en local"
-    timeout 10s ~/.local/bin/rcsync m $2
+    timeout 30s ~/.local/bin/rcsync m $2
     if [ "$(cat ~/.config/rcsync/status | grep "STATUS" | cut -d"=" -f2 )" = "stop" ]
     then
     sed -i s'|stop|start|'g   ~/.config/rcsync/status
