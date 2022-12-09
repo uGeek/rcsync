@@ -23,7 +23,7 @@
 
 
 
-VERSION=1.0.3
+VERSION=1.0.4
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -260,13 +260,12 @@ fi
 
 if [ "$1" = "m" ]
 then
-while :
-do
+#EDITMOD=1    
 inotifywait -e create,delete,modify,move,attrib  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
+rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v    
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
-    echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
-~/.local/bin/rcsync push
-done
+echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
+break
 done
 exit
 fi
@@ -274,10 +273,9 @@ fi
 if [ "$1" = "sync" ]
 then
 while :
-do
+do       
     CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
-    # subir                                                                                                                                                                                                       \
-                                                                                                                                                                                                                   
+
     if [ "$CAMBIOS" != "" ]
     then
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Descargando del servidor"
@@ -286,7 +284,21 @@ do
     echo "Descargando del servidor $(date +'%Y-%m-%d  %T') "
     fi
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Comprobando cambios en local"
+    timeout 10s ~/.local/bin/rcsync m $2
+    CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
+    if [ "$CAMBIOS" != "" ]
+    then
+    echo "Modo edición durante 30 segundos"	
+    dunstify -u critical -t 2000  "rcsync" "Modo edición durante 30 segundos"
     timeout 30s ~/.local/bin/rcsync m $2
+    CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
+    if [ "$CAMBIOS" != "" ]
+    then
+    echo "Modo edición durante 30 segundos más"	
+    dunstify -u critical -t 2000  "rcsync" "Modo edición 30 segundos más"
+    timeout 30s ~/.local/bin/rcsync m $2
+    fi   
+    fi
     if [ "$(cat ~/.config/rcsync/status | grep "STATUS" | cut -d"=" -f2 )" = "stop" ]
     then
     sed -i s'|stop|start|'g   ~/.config/rcsync/status
