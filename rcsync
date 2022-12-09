@@ -297,6 +297,44 @@ done
 exit
 fi
 
+if [ "$1" = "m" ]
+then
+inotifywait -e modify  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10" | while read line; do
+dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
+~/.local/bin/rcsync push
+done
+exit
+fi
+
+
+if [ "$1" = "sync" ]
+then
+    if [ "$3" = "memory" ]
+    then
+    rclone mount :memory: "$(echo $LOCAL | cut -d":" -f2-)" &
+fi
+
+
+while :
+do
+    CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
+    # subir                                                                                                                                                                                                        
+    if [ "$CAMBIOS" != "" ]
+    then
+    echo "Descargando cambios"
+    dunstify -u low -t 2000  "rcsync" "Descargando archivos del servidor"
+    rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v
+    clear
+    fi
+    timeout 10s ~/.local/bin/rcsync m $2
+    echo "Comprobando cambios en el servidor"
+    clear
+done
+
+exit
+fi
+
+
 if [ "$1" = "synct" ]
 then
     if [ "$3" = "memory" ]
