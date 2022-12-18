@@ -23,7 +23,7 @@
 
 
 
-VERSION=1.0.7
+VERSION=1.0.8
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -48,7 +48,8 @@ rcsync   e       nube          >>>  Configurar archivo de configuración y direc
 rcsync   mount   nube          >>>  Montar directorios añadidos en el archivo de configuración
 rcsync   m                     >>>  Monitorización de directorios. Hacer 1 únio push si hay cambios
 
-
+rcsync   tree    nube  3       >>>  Listar árbol de directorios del servidor hasta 3 niveles de profundidaz            
+rcsync   treef   nube  4       >>>  Listar árbol de archivos del servidor, hasta 4 niveles de profundidaz 
 
 
 Ubuntu
@@ -334,6 +335,21 @@ fi
 echo ""
 echo ""
 done
+exit
+fi
+
+if [ "$1" = "tree" ]
+then
+echo "Archivos en el servidor: $SERVIDOR"
+rclone tree "$SERVIDOR" -ad --level "$3"
+exit
+fi
+
+
+if [ "$1" = "treef" ]
+then
+echo "Archivos en el servidor: $SERVIDOR"
+rclone tree "$SERVIDOR" -a --level "$3"
 exit
 fi
 
