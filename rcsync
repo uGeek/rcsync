@@ -80,7 +80,7 @@ version $VERSION
 fi
 
 
-if [ "$1" = "install" ] || [ "$2" = "ubuntu" ]
+if [ "$1" = "install" ] && [ "$2" = "ubuntu" ]
 then
     ### Ubuntu
     sudo apt install curl notify-osd dialog  inotify-tools dunst dunstify -y
@@ -97,7 +97,7 @@ exit
 fi
 
 
-if [ "$1" = "install" ] || [ "$2" = "arch" ]
+if [ "$1" = "install" ] && [ "$2" = "arch" ]
 then
     ### Ubuntu
     sudo pacman -Syy inotify-tools notify-osd rclone dunst
@@ -132,7 +132,7 @@ else
 fi
 
 
-if [ "$1" = "install" ] || [ "$2" = "termux" ]
+if [ "$1" = "install" ] && [ "$2" = "termux" ]
 then
     ### Termux
     pkg upgrade
