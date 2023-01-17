@@ -23,7 +23,7 @@
 
 
 
-VERSION=1.0.9.1
+VERSION=v1.0.9.2
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -262,12 +262,14 @@ fi
 if [ "$1" = "sync" ]
 then
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Iniciando sincronización con rcsync sync"
+    termux-notification  -t "rcsync"  -c "Iniciando sincronización con rcsync sync" 2>/dev/null
+    dunstify -u low -t 2000  "rcsync" "Iniciando sincronización con rcsync sync"    2>/dev/null 
 
 while :
 do  
     if [ "$VECES" = "30" ] ; then
-    dunstify -u low -t 2000  "rcsync" "Sincronizando con rcsync..."
-    termux-notification  -t "rcsync"  -c "Sincronizando con rcsync..."
+    dunstify -u low -t 2000  "rcsync" "Sincronizando con rcsync..."    2>/dev/null
+    termux-notification  -t "rcsync"  -c "Sincronizando con rcsync..." 2>/dev/null
     fi
     VECES="$(( $VECES + 1 ))" 
     
@@ -275,8 +277,8 @@ do
 
     if [ "$CAMBIOS" != "" ]
     then
-    echo "$(date +'%Y/%m/%d  %T') INFO  :  Descargando del servidor"
-    dunstify -u low -t 2000  "rcsync" "Descargando archivos del servidor"
+    echo "$(date +'%Y/%m/%d  %T') INFO  :  Descargando del servidor"        2>/dev/null
+    dunstify -u low -t 2000  "rcsync" "Descargando archivos del servidor"   2>/dev/null 
     termux-notification  -t "rcsync"  -c "Descargando $(date +'%T')"
     rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG -v
     echo "Descargando del servidor $(date +'%Y-%m-%d  %T') "
@@ -287,8 +289,8 @@ do
     if [ "$CAMBIOS" != "" ]
     then
     rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v    
-dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
-termux-notification  -t "rcsync"  -c "Subiendo $(date +'%T')"
+dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"  2>/dev/null
+termux-notification  -t "rcsync"  -c "Subiendo $(date +'%T')"      2>/dev/null
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"
 
 while :
@@ -299,8 +301,8 @@ if [ "$CAMBIOS" != "" ]
 then
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Comprobando cambios en local 10 segundos más. Modo Edición"
 rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v    
-dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
-termux-notification  -t "rcsync"  -c "Subiendo $(date +'%T')"
+dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"   2>/dev/null
+termux-notification  -t "rcsync"  -c "Subiendo $(date +'%T')"       2>/dev/null
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
 else
     break
