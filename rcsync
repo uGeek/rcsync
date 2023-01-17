@@ -271,6 +271,7 @@ do
     then
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Descargando del servidor"
     dunstify -u low -t 2000  "rcsync" "Descargando archivos del servidor"
+    termux-notification  -t "rcsync"  -c "Descargando archivos del servidor"
     rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG -v
     echo "Descargando del servidor $(date +'%Y-%m-%d  %T') "
     fi
@@ -281,6 +282,7 @@ do
     then
     rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v    
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
+termux-notification  -t "rcsync"  -c "subiendo archivos al servidor"
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"
 
 while :
@@ -292,6 +294,7 @@ then
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Comprobando cambios en local 10 segundos más. Modo Edición"
 rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v    
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"
+termux-notification  -t "rcsync"  -c "Subiendo archivos al servidor"
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
 else
     break
