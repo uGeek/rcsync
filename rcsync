@@ -37,7 +37,8 @@ rcsync   local   nube          >>>  Sincronizar hacia al servidor, siempre que h
 rcsync   server  nube          >>>  Sincronizar del servidor a local
 rcsync   sync    nube          >>>  Sincronización con la nube bidireccional
 rcsync   stop    nube          >>>  Detener la sincronizaci
-rcsync   sync    nube memory   >>> Montar en el directorio local la RAM y simcronización con la nube bidireccional
+rcsync   sync    nube memory   >>>  Montar en el directorio local la RAM y simcronización con la nube bidireccional
+rcsync   syncu   nube          >>>  Subir en bucle cada modificaci
 rcsync   push/pull/local/server/sync  nube c  >>>  Archivo de configuración de rclone cifrado
 rcsync   menu    nube          >>>  Elegir entre subir o descargar archivos en modo bucle
 
@@ -258,6 +259,32 @@ sleep 10
 done
 exit
 fi
+
+if [ "$1" = "syncu" ]
+then
+    echo "$(date +'%Y/%m/%d  %T') INFO  :  Iniciando sincronización con rcsync sync"
+    termux-notification  -t "rcsync"  -c "Iniciando sincronización con rcsync sync" 2>/dev/null
+    dunstify -u low -t 2000  "rcsync" "Iniciando sincronización con rcsync sync"    2>/dev/null 
+    rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG -v
+while :
+do       
+
+CAMBIOS=$(timeout 10s inotifywait -e create,delete,modify,move,attrib  -mrq "$FOLDER_1" "$FOLDER_2" "$FOLDER_3" "$FOLDER_4" "$FOLDER_5" "$FOLDER_6" "$FOLDER_7" "$FOLDER_8" "$FOLDER_9" "$FOLDER_10")
+if [ "$CAMBIOS" != "" ]
+then
+echo "$(date +'%Y/%m/%d  %T') INFO  :  Comprobando cambios en local 10 segundos más. Modo Edición"
+rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v    
+dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"   2>/dev/null
+termux-notification  -t "rcsync"  -c "Subiendo $(date +'%T')"       2>/dev/null
+echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
+else
+    break
+fi
+done
+exit
+fi
+
+
 
 if [ "$1" = "sync" ]
 then
