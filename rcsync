@@ -23,7 +23,7 @@
 
 
 
-VERSION=1.0.9
+VERSION=1.0.9.1
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -264,7 +264,13 @@ then
     echo "$(date +'%Y/%m/%d  %T') INFO  :  Iniciando sincronización con rcsync sync"
 
 while :
-do       
+do  
+    if [ "$VECES" = "30" ] ; then
+    dunstify -u low -t 2000  "rcsync" "Sincronizando con rcsync..."
+    termux-notification  -t "rcsync"  -c "Sincronizando con rcsync..."
+    fi
+    VECES="$(( $VECES + 1 ))" 
+    
     CAMBIOS=$(rclone sync $SERVIDOR $LOCAL --filter-from $FILES  --config=$CONFIG --dry-run -v 2>&1 | grep "Skipped")
 
     if [ "$CAMBIOS" != "" ]
