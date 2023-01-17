@@ -23,7 +23,7 @@
 
 
 
-VERSION=v1.0.9.3
+VERSION=v1.0.9.3.1
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "h" ] || [ "$1" = "" ]
 then
@@ -277,8 +277,6 @@ rclone sync $LOCAL $SERVIDOR  --filter-from $FILES  --config=$CONFIG -v
 dunstify -u low -t 2000  "rcsync" "subiendo archivos al servidor"   2>/dev/null
 termux-notification  -t "rcsync"  -c "Subiendo $(date +'%T')"       2>/dev/null
 echo "$(date +'%Y/%m/%d  %T') INFO  :  Subiendo al servidor"  
-else
-    break
 fi
 done
 exit
