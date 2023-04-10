@@ -6,6 +6,12 @@ Sincronización de directorios con multitud de nubes públicas o privadas.
 - **En Android es necesario crear previamente el directorio que vamos a sincronizar**
 
 
+## Instalación
+```
+sudo curl -L https://raw.githubusercontent.com/uGeek/rcsync/master/rcsync \                                                                         ✔  
+          -o /usr/bin/rcsync && sudo chmod +x /usr/bin/rcsync
+```
+
 
 ## Instalación en Ubuntu
 
